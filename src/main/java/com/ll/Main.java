@@ -29,7 +29,7 @@ class App{
 
         boolean flag = true;
         int count=1;
-
+        //git test
         while(flag){
             System.out.println("== 명언 앱 ==");
             System.out.printf("명령)");
