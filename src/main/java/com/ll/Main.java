@@ -1,6 +1,9 @@
 package com.ll;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.*;
+import java.io.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -32,16 +35,15 @@ class App{
     Scanner sc =new Scanner(System.in);
 
     public void run(){
-
-        boolean flag = true;
         int count=1;
+        boolean flag = true;
+
         //git test
         while(flag){
             System.out.println("== 명언 앱 ==");
             System.out.printf("명령)");
             String total = sc.nextLine();//가나다라
-//            String cmd = total.substring(0,2);
-//            String rest = total.substring(2);
+
             String []cmd = total.split("\\?");
             try {
                 switch (cmd[0]) {
@@ -64,6 +66,33 @@ class App{
             }catch (ArrayIndexOutOfBoundsException e){
                 System.out.println("잘못된 명령어를 입력하였습니다. 다시 입력해 주세요.");
             }
+        }
+    }
+    public void controlFile(int type, int index){
+        String filePath = "C:/Users/zxc86/Desktop/gittest/wise-saying-app/db/wiseSaying";
+        String fileName = index+".txt";
+
+        File file = new File(filePath,fileName);
+
+        try {
+            File directory = new File(filePath);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if(type==1) {
+                file.createNewFile();
+                WiseSaying ws = list.get(index);
+                Writer w = new FileWriter(file);
+                w.write("id : " + ws.num+"\n");
+                w.write("content : " + ws.saying+"\n");
+                w.write("author : " + ws.writer+"\n");
+            }else{
+                file.delete();
+            }
+        }catch (IOException e){
+
+            e.printStackTrace();
+
         }
     }
     public int explower(int num){
@@ -99,8 +128,10 @@ class App{
         String say = sc.nextLine();
         System.out.printf("작가 : ");
         String writer = sc.nextLine();
-        WiseSaying ws = new WiseSaying(say,writer,count++);
+        WiseSaying ws = new WiseSaying(say,writer,count);
         list.add(ws);
+        controlFile(1,count-1);
+        count++;
         System.out.println(ws.num+"번 명언이 등록되었습니다.");
     }
     public void list(){
@@ -118,6 +149,7 @@ class App{
         if(index!=-1){
             list.remove(index);
             System.out.println(num+"번 명언이 삭제되었습니다.");
+            controlFile(2,index);
             return;
         }else{
             System.out.println(num+"번 명언은 존재하지 않습니다");
