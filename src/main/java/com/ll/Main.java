@@ -1,12 +1,9 @@
 package com.ll;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
+
 import java.util.*;
 import java.io.*;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 public class Main {
     public static void main(String[] args) {
         App app =new App();
@@ -33,9 +30,9 @@ class WiseSaying{
 class App{
     List<WiseSaying> list = new ArrayList<>();
     Scanner sc =new Scanner(System.in);
-
+    int count=1;
     public void run(){
-        int count=1;
+
         boolean flag = true;
 
         //git test
@@ -48,8 +45,8 @@ class App{
             try {
                 switch (cmd[0]) {
                     case "등록":
-                        add(count);
-                        count++;
+                        add();
+
                         break;
                     case "종료":
                         flag = false;
@@ -68,32 +65,31 @@ class App{
             }
         }
     }
-    public void controlFile(int type, int index){
+    public void controlFile(int type, int id){
+        int index = explower(id);
+        WiseSaying ws = list.get(index);
+
         String filePath = "C:/Users/zxc86/Desktop/gittest/wise-saying-app/db/wiseSaying";
-        String fileName = index+".txt";
+        String fileName = ws.num+".txt";
 
         File file = new File(filePath,fileName);
 
-        try {
-            File directory = new File(filePath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            if(type==1) {
+        try{
+            if(type==1){
                 file.createNewFile();
-                WiseSaying ws = list.get(index);
-                Writer w = new FileWriter(file);
-                w.write("id : " + ws.num+"\n");
-                w.write("content : " + ws.saying+"\n");
-                w.write("author : " + ws.writer+"\n");
-            }else{
+                Writer writer = new FileWriter(file);
+                writer.write("id : " + ws.num + "\n");
+                writer.write("content : " + ws.saying + "\n");
+                writer.write("author : " + ws.writer + "\n");
+                writer.close();
+            }else if(type==2){
                 file.delete();
             }
-        }catch (IOException e){
-
+        }catch(IOException e){
             e.printStackTrace();
-
         }
+
+        //C:\Users\zxc86\Desktop\gittest\wise-saying-app\db\wiseSaying
     }
     public int explower(int num){
         for(int i=0;i<list.size();i++){
@@ -118,20 +114,20 @@ class App{
             String newwriter = sc.nextLine();
             ws.changeSaying(newsaying);
             ws.changeWriter(newwriter);
+//            controlFile(1,ws.num);
         }else{
             System.out.println(num+"번 명언은 존재하지 않습니다");
         }
 
     }
-    public void add(int count){
+    public void add(){
         System.out.printf("명언 : ");
         String say = sc.nextLine();
         System.out.printf("작가 : ");
         String writer = sc.nextLine();
-        WiseSaying ws = new WiseSaying(say,writer,count);
+        WiseSaying ws = new WiseSaying(say,writer,count++);
         list.add(ws);
-        controlFile(1,count-1);
-        count++;
+        controlFile(1,ws.num);
         System.out.println(ws.num+"번 명언이 등록되었습니다.");
     }
     public void list(){
@@ -149,12 +145,9 @@ class App{
         if(index!=-1){
             list.remove(index);
             System.out.println(num+"번 명언이 삭제되었습니다.");
-            controlFile(2,index);
-            return;
+            controlFile(2,num);
         }else{
             System.out.println(num+"번 명언은 존재하지 않습니다");
         }
-
-
     }
 }
