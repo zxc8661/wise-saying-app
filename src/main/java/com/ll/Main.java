@@ -1,8 +1,7 @@
 package com.ll;
-
 import java.util.*;
 import java.io.*;
-
+//
 
 public class Main {
     public static void main(String[] args) {
@@ -114,7 +113,7 @@ class App{
             String newwriter = sc.nextLine();
             ws.changeSaying(newsaying);
             ws.changeWriter(newwriter);
-//            controlFile(1,ws.num);
+            controlFile(1,ws.num);
         }else{
             System.out.println(num+"번 명언은 존재하지 않습니다");
         }
@@ -143,9 +142,10 @@ class App{
         int num =Integer.parseInt(sarr[1]);
         int index = explower(num);
         if(index!=-1){
+            controlFile(2,num);
             list.remove(index);
             System.out.println(num+"번 명언이 삭제되었습니다.");
-            controlFile(2,num);
+
         }else{
             System.out.println(num+"번 명언은 존재하지 않습니다");
         }
