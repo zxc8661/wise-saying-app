@@ -21,17 +21,14 @@ public class WiseSayingService {
        int index = wsr.explore(id);
        WiseSaying ws = tmp.get(index);
        System.out.print("명언(기존) : "+ws.getContent()+"\n" +
-               "명언");
+               "명언 : ");
        String newContent = sc.nextLine();
-       System.out.println("작가(기존) :"+ws.getAuthor()+"\n" +
-               "작가");
+       System.out.print("작가(기존) :"+ws.getAuthor()+"\n" +
+               "작가 : ");
        String newAuthor = sc.nextLine();
        wsr.modify(newContent,newAuthor,index);
     }
     public void build(){
-
+        wsr.build();
     }
-
-
-
 }

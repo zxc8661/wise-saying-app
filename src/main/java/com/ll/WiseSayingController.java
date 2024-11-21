@@ -58,8 +58,9 @@ public class WiseSayingController {
                        System.out.println("수정되었습니다");
                     }
                     break;
-                case "빌드":
+                case "빌드":   //여기 해야되 11월 21
                     wss.build();
+                    System.out.println("data.json 파일의 내용이 갱신되었습니다.");
                     break;
                 default:
                     System.out.println("잘못된 명령어를 입력하였습니다.\n" +

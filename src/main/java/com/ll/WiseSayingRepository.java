@@ -38,6 +38,7 @@ public class WiseSayingRepository {
       WiseSaying ws = wsList.get(index);
       ws.setContent(newContent);
       ws.setAuthor(newAuthor);
+      controlData();
 
     }
 
@@ -55,8 +56,17 @@ public class WiseSayingRepository {
     }
 
     public void build(){
-
+         ObjectMapper objectMapper = new ObjectMapper();
+         try{
+             File file = new File(BASIC_PATH+"/data.json");
+             ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+              writer.writeValue(file,wsList);
+         }catch (IOException e){
+             e.printStackTrace();
+         }
     }
+
+
 
     public void controlData(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -84,3 +94,4 @@ public class WiseSayingRepository {
         return wsList;
     }
 }
+
