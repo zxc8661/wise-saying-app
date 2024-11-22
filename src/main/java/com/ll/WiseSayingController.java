@@ -4,10 +4,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class WiseSayingController {
+    private final Scanner sc;
+    private final WiseSayingService wss;
+
+    WiseSayingController(Scanner sc){
+        this.sc = sc;
+        this.wss = new WiseSayingService(sc);
+    }
     public void controller(String cmd){
         String []cmds = cmd.split("\\?");
-        WiseSayingService wss = new WiseSayingService();
-        Scanner sc = new Scanner(System.in);
 
         switch(cmds[0]){
                 case "등록":

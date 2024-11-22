@@ -5,7 +5,11 @@ import java.util.Scanner;
 
 public class WiseSayingService {
     WiseSayingRepository wsr = new WiseSayingRepository();
-    Scanner sc =new Scanner(System.in);
+    Scanner sc;
+
+    WiseSayingService(Scanner sc ){
+        this.sc = sc;
+    }
     public void add(String content,String author){
         wsr.add(content,author);
     }
