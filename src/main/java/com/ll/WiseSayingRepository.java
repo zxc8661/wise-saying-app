@@ -15,16 +15,16 @@ public class WiseSayingRepository {
     static private List<WiseSaying> wsList = new ArrayList<>();
     static String BASIC_PATH = "C:/Users/zxc86/Desktop/gittest/wise-saying-app/db/wiseSaying";
     static int count=1;
-    public void add(String content,String author){
+    public int  add(String content,String author){
         WiseSaying ws =new WiseSaying(count++,content,author);
         wsList.add(ws);
         controlData();
-
+        return ws.getId();
     }
 
     public boolean delect(int id){
         int index = explore(id);
-        if(index==-1){
+              if(index==-1){
             return false;
         }
         File file = new File(BASIC_PATH+"/"+id+".json");
@@ -88,6 +88,19 @@ public class WiseSayingRepository {
             e.printStackTrace();
         }
 
+    }
+
+    public void clearData(){
+        wsList.clear();
+        count = 1;
+
+        // Clear file system data
+        File directory = new File(BASIC_PATH);
+        if (directory.exists()) {
+            for (File file : directory.listFiles()) {
+                file.delete();
+            }
+        }
     }
 
     public List<WiseSaying> getList(){

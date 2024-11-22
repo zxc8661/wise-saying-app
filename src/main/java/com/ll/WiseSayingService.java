@@ -10,8 +10,9 @@ public class WiseSayingService {
     WiseSayingService(Scanner sc ){
         this.sc = sc;
     }
-    public void add(String content,String author){
-        wsr.add(content,author);
+    public int add(String content,String author){
+
+        return wsr.add(content,author);
     }
 
     public boolean delect(int id){
@@ -27,12 +28,15 @@ public class WiseSayingService {
        System.out.print("명언(기존) : "+ws.getContent()+"\n" +
                "명언 : ");
        String newContent = sc.nextLine();
-       System.out.print("작가(기존) :"+ws.getAuthor()+"\n" +
+       System.out.print("작가(기존) : "+ws.getAuthor()+"\n" +
                "작가 : ");
        String newAuthor = sc.nextLine();
        wsr.modify(newContent,newAuthor,index);
     }
     public void build(){
         wsr.build();
+    }
+    public void clear(){
+        wsr.clearData();
     }
 }

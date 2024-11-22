@@ -21,15 +21,16 @@ public class WiseSayingController {
                     System.out.print("작가 : ");
                     String author= sc.nextLine();
 
-                    wss.add(content,author);
-                    System.out.println("등록 완료했습니다.");
+                    int id =wss.add(content,author);
+                    System.out.println(id+"번 명언이 등록되었습니다.");
                     break;
                 case "목록":
                     List<WiseSaying> list= wss.list();
-                    System.out.println("번호 / 작가 / 명언");
+                    System.out.println("번호 / 작가 / 명언" +
+                            "----------------------");
                     for(int i=list.size()-1;i>=0;i--){
                         WiseSaying ws=list.get(i);
-                        System.out.println(ws.getId()+" / "+ws.getAuthor()+" / "+ws.getContent());
+                        System.out.println(String.format("%d / %s / %s ",ws.getId(),ws.getAuthor(),ws.getContent()));
                     }
                     break;
 
@@ -46,7 +47,7 @@ public class WiseSayingController {
 
                         int d_id = Integer.parseInt(cmds[1].substring(3));
                         if(wss.delect(d_id)){
-                            System.out.println(d_id+"번 명령어가 삭제되었습니다.");
+                            System.out.println(d_id+"번 명언이 삭제되었습니다.");
                         }else{
                             System.out.println(d_id+"번 명언은 존재하지 않습니다.");
                         }
@@ -67,6 +68,10 @@ public class WiseSayingController {
                     wss.build();
                     System.out.println("data.json 파일의 내용이 갱신되었습니다.");
                     break;
+                case "초기":
+                        wss.clear();
+                        break;
+
                 default:
                     System.out.println("잘못된 명령어를 입력하였습니다.\n" +
                             "명령어는 다음과 같습니다\n" +
