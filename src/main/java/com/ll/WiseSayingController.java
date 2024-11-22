@@ -11,6 +11,9 @@ public class WiseSayingController {
         this.sc = sc;
         this.wss = new WiseSayingService(sc);
     }
+    public void upDate(){
+
+    }
     public void controller(String cmd){
         String []cmds = cmd.split("\\?");
 
@@ -26,11 +29,30 @@ public class WiseSayingController {
                     break;
                 case "목록":
                     List<WiseSaying> list= wss.list();
-                    System.out.println("번호 / 작가 / 명언" +
-                            "----------------------");
-                    for(int i=list.size()-1;i>=0;i--){
-                        WiseSaying ws=list.get(i);
-                        System.out.println(String.format("%d / %s / %s ",ws.getId(),ws.getAuthor(),ws.getContent()));
+                    if(cmds.length==1) {
+                        System.out.println("번호 / 작가 / 명언\n" +
+                                "----------------------");
+                        for (int i = list.size() - 1; i >= 0; i--) {
+                            WiseSaying ws = list.get(i);
+                            System.out.println(String.format("%d / %s / %s ", ws.getId(), ws.getAuthor(), ws.getContent()));
+                        }
+                    }else if(cmds.length==2) {
+                       String[] parts = cmds[1].split("[=&]");
+                       System.out.println(String.format("""
+                               ----------------------
+                               검색타입 : %s
+                               검색어 : %s
+                               ----------------------
+                               번호 / 작가 / 명언
+                               ----------------------""",parts[1],parts[3]));
+                       for(int i=list.size()-1;i>=0;i--){
+                           WiseSaying ws = list.get(i);
+                           if(parts[1].equals("content") && ws.getContent().contains(parts[3])){
+                               System.out.println(String.format("%d / %s / %s ", ws.getId(), ws.getAuthor(), ws.getContent()));
+                           }else if(parts[1].equals("author") && ws.getAuthor().contains(parts[3])){
+                               System.out.println(String.format("%d / %s / %s ", ws.getId(), ws.getAuthor(), ws.getContent()));
+                           }
+                       }
                     }
                     break;
 
@@ -60,7 +82,15 @@ public class WiseSayingController {
                                 "적용할 id를 입력해 주세요");
                     }else{
                         int m_id = Integer.parseInt(cmds[1].substring(3));
-                       wss.modify(m_id);
+
+                       WiseSaying ws = wss.getWiseSaying(m_id);
+                       System.out.println("명언(기존) : "+ws.getContent());
+                       System.out.print("명언 : ");
+                       String newC = sc.nextLine();
+                       System.out.println("작가(기존) : "+ws.getAuthor());
+                       System.out.print("작가 : ");
+                       String newA=sc.nextLine();
+                       wss.modify(newC,newA,ws.getId());
                        System.out.println("수정되었습니다");
                     }
                     break;

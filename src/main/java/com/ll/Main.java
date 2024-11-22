@@ -22,6 +22,7 @@ class App {
 
         WiseSayingController wsc= new WiseSayingController(sc);
 
+
         while(true){
             System.out.print("== 명언 앱 == \n명령 )");
             if(!sc.hasNextLine()){
