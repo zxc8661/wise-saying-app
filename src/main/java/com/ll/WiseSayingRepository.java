@@ -106,5 +106,7 @@ public class WiseSayingRepository {
     public List<WiseSaying> getList(){
         return wsList;
     }
+
+
 }
 

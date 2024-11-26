@@ -29,4 +29,8 @@ public class WiseSaying {
     public void setAuthor(String author){
         this.author = author;
     }
+
+    public void getAll(){
+        System.out.println(String.format("%d / %s / %s",this.id,this.author,this.content));
+    }
 }

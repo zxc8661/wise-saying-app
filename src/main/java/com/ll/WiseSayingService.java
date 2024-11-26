@@ -23,17 +23,14 @@ public class WiseSayingService {
         return wsr.list();
     }
     public void modify(String newC,String newA,int id){
-//       List<WiseSaying> tmp = wsr.getList();
       int index = wsr.explore(id);
-//       WiseSaying ws = tmp.get(index);
-//       System.out.print("명언(기존) : "+ws.getContent()+"\n" +
-//               "명언 : ");
-//       String newContent = sc.nextLine();
-//       System.out.print("작가(기존) : "+ws.getAuthor()+"\n" +
-//               "작가 : ");
-//       String newAuthor = sc.nextLine();
+
        wsr.modify(newC,newA,index);
     }
+
+//    public void upDate(){
+//        wsr.upDate();
+//    }
     public void build(){
         wsr.build();
     }

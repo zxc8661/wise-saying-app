@@ -21,7 +21,7 @@ class App {
     public void run(){
 
         WiseSayingController wsc= new WiseSayingController(sc);
-
+//        wsc.upDate();
 
         while(true){
             System.out.print("== 명언 앱 == \n명령 )");
