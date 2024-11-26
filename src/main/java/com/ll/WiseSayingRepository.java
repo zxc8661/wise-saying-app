@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
+//asdfsdfsadfsasfdsfdsfsfsf
 public class WiseSayingRepository {
     static private List<WiseSaying> wsList = new ArrayList<>();
     static String BASIC_PATH = "C:/Users/zxc86/Desktop/gittest/wise-saying-app/db/wiseSaying";
@@ -109,4 +109,4 @@ public class WiseSayingRepository {
 
 
 }
-
+//sdf
