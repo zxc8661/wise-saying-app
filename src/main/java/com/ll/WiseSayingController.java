@@ -5,108 +5,38 @@ import java.util.Scanner;
 
 public class WiseSayingController {
     private final Scanner sc;
-    private final WiseSayingService wss;
+    private final WiseSayingService service;
 
     WiseSayingController(Scanner sc){
         this.sc = sc;
-        this.wss = new WiseSayingService(sc);
+        this.service = new WiseSayingService(sc);
     }
-//    public void upDate(){
-//        wss.upDate();
-//    }
+
     public void controller(String cmd){
         String []cmds = cmd.split("[?,=,&]");
+        String action = cmds[0];
 
-        switch(cmds[0]){
+        switch(action){
                 case "등록":
-                    System.out.print("명언 : ");
-                    String content = sc.nextLine();
-                    System.out.print("작가 : ");
-                    String author= sc.nextLine();
-
-                    int id =wss.add(content,author);
-                    System.out.println(id+"번 명언이 등록되었습니다.");
+                    handleAdd();
                     break;
                 case "목록":
+                    handleList(cmds);
 
-
-
-                    List<WiseSaying> list= wss.list();
-                   if(cmds.length<=3){
-                       int page =0;
-                       if(cmds.length==1)
-                           page=1;
-                       else
-                           page=Integer.parseInt(cmds[2]);
-
-                       int start = list.size()-1 - (5*(page-1));
-                       for(int i=start;i>start-5;i--){
-                           WiseSaying ws = list.get(i);
-                           ws.getAll();
-                       }
-                   }else{
-                        System.out.println(String.format("""
-                                ----------------------
-                                 검색타입 : %s
-                                  검색어 : %s
-                                  ----------------------
-                             번호 / 작가 / 명언
-                                   ----------------------""", cmds[2], cmds[4]));
-                        for(int i=list.size();i>=0;i--){
-                            WiseSaying ws = list.get(i);
-                            if(cmds[2].equals("content") && ws.getContent().equals(cmds[4]))
-                                ws.getAll();
-                            else if(cmds[2].equals("Author") && ws.getAuthor().equals(cmds[4]));
-                                ws.getAll();
-                        }
-                   }
-//                    i
-                    break;
-
-                case "종료":
-                    System.out.println("APP이 종료되었습니다\n" +
-                            "감사합니다.");
-                    System.exit(0);
                     break;
                 case "삭제":
-                    if(cmds.length<2) {
-                        System.out.println("잘못된 입력입니다\n" +
-                                "적용할 id를 입력해 주세요");
-                    }else {
-
-                        int d_id = Integer.parseInt(cmds[2]);
-                        if(wss.delect(d_id)){
-                            System.out.println(d_id+"번 명언이 삭제되었습니다.");
-                        }else{
-                            System.out.println(d_id+"번 명언은 존재하지 않습니다.");
-                        }
-                    }
-
+                    handleDelete(cmds);
                     break;
                 case "수정":
-                    if(cmds.length<2) {
-                        System.out.println("잘못된 입력입니다\n" +
-                                "적용할 id를 입력해 주세요");
-                    }else{
-                        int m_id = Integer.parseInt(cmds[2]);
+                    handleModigy(cmds);
 
-                       WiseSaying ws = wss.getWiseSaying(m_id);
-                       System.out.println("명언(기존) : "+ws.getContent());
-                       System.out.print("명언 : ");
-                       String newC = sc.nextLine();
-                       System.out.println("작가(기존) : "+ws.getAuthor());
-                       System.out.print("작가 : ");
-                       String newA=sc.nextLine();
-                       wss.modify(newC,newA,ws.getId());
-                       System.out.println("수정되었습니다");
-                    }
                     break;
                 case "빌드":   //여기 해야되 11월 21
-                    wss.build();
+                    service.build();
                     System.out.println("data.json 파일의 내용이 갱신되었습니다.");
                     break;
                 case "초기":
-                        wss.clear();
+                    service.clear();
                         break;
 
                 default:
@@ -118,4 +48,83 @@ public class WiseSayingController {
 
             }
     }
+
+    private void handleDelete(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println("적용할 ID를 입력해주세요.");
+            return;
+        }
+
+        int id = Integer.parseInt(parts[1]);
+        if (service.delete(id)) {
+            System.out.println(id + "번 명언이 삭제되었습니다.");
+        } else {
+            System.out.println(id + "번 명언은 존재하지 않습니다.");
+        }
+    }
+
+    private void handleModigy(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println("적용할 ID를 입력해주세요.");
+            return;
+        }
+
+        int id = Integer.parseInt(parts[1]);
+        WiseSaying saying = service.getById(id);
+        if (saying == null) {
+            System.out.println(id + "번 명언은 존재하지 않습니다.");
+            return;
+        }
+
+        System.out.println("명언(기존): " + saying.getContent());
+        System.out.print("명언: ");
+        String newContent = sc.nextLine();
+
+        System.out.println("작가(기존): " + saying.getAuthor());
+        System.out.print("작가: ");
+        String newAuthor = sc.nextLine();
+
+        service.modify(id, newContent, newAuthor);
+        System.out.println("수정되었습니다.");
+    }
+
+    public void handleAdd(){
+        System.out.print("명언 : ");
+        String content = sc.nextLine().trim();
+        System.out.print("작가 : ");
+        String author= sc.nextLine().trim();
+
+        int id =service.add(content,author);
+        System.out.println(id+"번 명언이 등록되었습니다.");
+
+    }
+    private void handleList(String[] cmds) {
+        List<WiseSaying> list= service.getList();
+
+        if(cmds.length <=1){
+            printList(list,1);
+        }else if(cmds.length<=3){
+            int page = Integer.parseInt(cmds[3]);
+            printList(list,page);
+        }
+    }
+
+
+   private void printList(List<WiseSaying> list, int page){
+        int startIndex = Math.max(0,list.size()-(5*page));
+        int endIndex = Math.max(0,startIndex-5);
+
+        System.out.println("번호 / 작가 / 명언");
+       System.out.println("----------------------");
+
+       for(int i=startIndex-1;i>=endIndex;i--){
+           WiseSaying ws = list.get(i);
+           System.out.printf("%d / %s / %s%n", ws.getId(), ws.getAuthor(), ws.getContent());
+       }
+   }
+
+    public void loadFile(){
+        service.loadFile();
+    }
+
 }

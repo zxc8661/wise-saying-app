@@ -1,5 +1,6 @@
 package com.ll;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -13,81 +14,71 @@ import java.util.List;
 //asdfsdfsadfsasfdsfdsfsfsf
 public class WiseSayingRepository {
     static private List<WiseSaying> wsList = new ArrayList<>();
-    static String BASIC_PATH = "C:/Users/zxc86/Desktop/gittest/wise-saying-app/db/wiseSaying";
+    static String BASIC_PATH = "C:/Users/zxc86/Desktop/devcos/wise-saying-app/db/wiseSaying";
     static int count=1;
     public int  add(String content,String author){
         WiseSaying ws =new WiseSaying(count++,content,author);
         wsList.add(ws);
-        controlData();
+        saveToFile();
         return ws.getId();
     }
 
     public boolean delect(int id){
-        int index = explore(id);
-              if(index==-1){
-            return false;
-        }
-        File file = new File(BASIC_PATH+"/"+id+".json");
-        file.delete();
-        wsList.remove(index);
+        WiseSaying wiseSaying = getById(id);
+        if(wiseSaying == null) return false;
+        wsList.remove(wiseSaying);
+        saveToFile();
         return true;
+    }
+
+    public  void modify(int id, String newContent, String newAuthor){
+      WiseSaying ws = getById(id);
+      if(ws != null) {
+          ws.setContent(newContent);
+          ws.setAuthor(newAuthor);
+          saveToFile();
+      }
 
     }
 
-    public  void modify(String newContent,String newAuthor,int index){
-      WiseSaying ws = wsList.get(index);
-      ws.setContent(newContent);
-      ws.setAuthor(newAuthor);
-      controlData();
-
+    public WiseSaying getById(int id){
+        return wsList.stream()
+                .filter(ws->ws.getId() ==id)
+                .findFirst()
+                .orElse(null);
     }
 
-    public int explore(int id){
-        for(int i=0;i<wsList.size();i++){
-            WiseSaying ws = wsList.get(i);
-            if(ws.getId()==id)return i;
-        }
-        return -1;
-    }
-
-    public List<WiseSaying> list(){
+    public List<WiseSaying> getList(){
         List<WiseSaying> list = new ArrayList<>(wsList);
         return list;
     }
 
     public void build(){
-         ObjectMapper objectMapper = new ObjectMapper();
-         try{
-             File file = new File(BASIC_PATH+"/data.json");
-             ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
-              writer.writeValue(file,wsList);
-         }catch (IOException e){
-             e.printStackTrace();
-         }
+        saveToFile();
     }
 
 
 
-    public void controlData(){
+    private void saveToFile() {
         ObjectMapper objectMapper = new ObjectMapper();
-        File derectory = new File(BASIC_PATH);
-        if(!derectory.exists()) derectory.mkdirs();
-        try{
-            for(int i=0;i<wsList.size();i++){
-                WiseSaying ws = wsList.get(i);
-                File file = new File(BASIC_PATH+"/"+(ws.getId())+".json");
-                objectMapper.writeValue(file,ws);
-                ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
-                writer.writeValue(file,ws);
-            }
-            File file = new File(BASIC_PATH+"/lastId.txt");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write((count-1)+"");
-            writer.close();
-        }catch(IOException e){
-            e.printStackTrace();
+        ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+
+        File directory = new File(BASIC_PATH);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
 
+        try {
+            for (WiseSaying wiseSaying : wsList) {
+                File file = new File(BASIC_PATH + "/" + wiseSaying.getId() + ".json");
+                writer.writeValue(file, wiseSaying);
+            }
+
+            File file = new File(BASIC_PATH + "/data.json");
+            writer.writeValue(file, wsList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void clearData(){
@@ -103,10 +94,23 @@ public class WiseSayingRepository {
         }
     }
 
-    public List<WiseSaying> getList(){
-        return wsList;
-    }
+    public void loadFile(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file =new File(BASIC_PATH+"/data.json");
+        if(!file.exists()){
+            return;
+        }
 
+        try {
+            List<WiseSaying> loadedWiseSayings = objectMapper.readValue(file, new TypeReference<List<WiseSaying>>() {});
+            wsList.addAll(loadedWiseSayings);
+
+            // `nextId`를 가장 큰 ID 다음 값으로 설정
+            count = wsList.stream().mapToInt(WiseSaying::getId).max().orElse(0) + 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
 //sdf

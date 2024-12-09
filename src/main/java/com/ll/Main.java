@@ -1,8 +1,6 @@
 package com.ll;
 import java.util.*;
 import java.io.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,18 +19,19 @@ class App {
     public void run(){
 
         WiseSayingController wsc= new WiseSayingController(sc);
-//        wsc.upDate();
+//        wsc.loadFile();
 
         while(true){
             System.out.print("== 명언 앱 == \n명령 )");
-            if(!sc.hasNextLine()){
-                System.out.println("입력 없음");
-                break;
-            }
             String cmd = sc.nextLine(). trim();
-            if(cmd.equals("")){
-                System.out.println("잘못 입력하였습니다.\n다시입력해주세요");
+            if(cmd.isEmpty()){
+                System.out.println("잘못입력하였습니다.\n다시 입력해 수제요");
                 continue;
+            }
+
+            if(cmd.equals("종료")){
+                System.out.println("잘못 입력하였습니다.\n다시입력해주세요");
+                break;
             }
             wsc.controller(cmd);
 
