@@ -5,6 +5,8 @@ public class WiseSaying {
     private String content;
     private String author;
 
+    public WiseSaying() {}
+
     WiseSaying(int id,String content,String author){
         this.id = id;
         this.content = content;
@@ -20,6 +22,7 @@ public class WiseSaying {
     public String getAuthor(){
         return author;
     }
+
     public void setId(int id){
         this.id = id;
     }

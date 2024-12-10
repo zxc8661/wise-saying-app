@@ -64,7 +64,7 @@ public void  t3() throws Exception{
                 작자미상
                 종료
                 """);
-        assertThat(out).contains("명언(기존) : 현재를 사랑하라").contains("작가(기존) : 작가미상");
+        assertThat(out).contains("명언(기존): 현재를 사랑하라").contains("작가(기존): 작가미상");
    }
 
 

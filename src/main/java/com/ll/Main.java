@@ -19,10 +19,10 @@ class App {
     public void run(){
 
         WiseSayingController wsc= new WiseSayingController(sc);
-//        wsc.loadFile();
+        wsc.loadFile();    // 처음 파일 로드
 
         while(true){
-            System.out.print("== 명언 앱 == \n명령 )");
+            System.out.print("\n== 명언 앱 == \n명령 )");
             String cmd = sc.nextLine(). trim();
             if(cmd.isEmpty()){
                 System.out.println("잘못입력하였습니다.\n다시 입력해 수제요");
@@ -30,7 +30,6 @@ class App {
             }
 
             if(cmd.equals("종료")){
-                System.out.println("잘못 입력하였습니다.\n다시입력해주세요");
                 break;
             }
             wsc.controller(cmd);

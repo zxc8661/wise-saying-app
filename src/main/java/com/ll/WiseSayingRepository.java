@@ -73,12 +73,14 @@ public class WiseSayingRepository {
                 File file = new File(BASIC_PATH + "/" + wiseSaying.getId() + ".json");
                 writer.writeValue(file, wiseSaying);
             }
-
-            File file = new File(BASIC_PATH + "/data.json");
+            File file = new File(BASIC_PATH+"/lastId.txt");
+            writer.writeValue(file,count);
+            file = new File(BASIC_PATH + "/data.json");
             writer.writeValue(file, wsList);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void clearData(){
@@ -96,19 +98,22 @@ public class WiseSayingRepository {
 
     public void loadFile(){
         ObjectMapper objectMapper = new ObjectMapper();
-        File file =new File(BASIC_PATH+"/data.json");
-        if(!file.exists()){
-            return;
-        }
+        String path = BASIC_PATH+"/data.json";
+        try{
+            List<WiseSaying> wiseSayings = objectMapper.readValue(
+                    new File(path),
+                    new TypeReference<List<WiseSaying>>() {}
+            );
+           wsList.clear();
+           wsList.addAll(wiseSayings);
 
-        try {
-            List<WiseSaying> loadedWiseSayings = objectMapper.readValue(file, new TypeReference<List<WiseSaying>>() {});
-            wsList.addAll(loadedWiseSayings);
-
-            // `nextId`를 가장 큰 ID 다음 값으로 설정
-            count = wsList.stream().mapToInt(WiseSaying::getId).max().orElse(0) + 1;
-        } catch (IOException e) {
+            count = wiseSayings.stream()
+                    .mapToInt(WiseSaying::getId)
+                    .max()
+                    .orElse(0) + 1;
+        }catch (IOException e){
             e.printStackTrace();
+            System.out.println("asdasd");
         }
     }
 

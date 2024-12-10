@@ -1,5 +1,6 @@
 package com.ll;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,8 +55,7 @@ public class WiseSayingController {
             System.out.println("적용할 ID를 입력해주세요.");
             return;
         }
-
-        int id = Integer.parseInt(parts[1]);
+        int id = Integer.parseInt(parts[2]);
         if (service.delete(id)) {
             System.out.println(id + "번 명언이 삭제되었습니다.");
         } else {
@@ -69,7 +69,7 @@ public class WiseSayingController {
             return;
         }
 
-        int id = Integer.parseInt(parts[1]);
+        int id = Integer.parseInt(parts[2]);
         WiseSaying saying = service.getById(id);
         if (saying == null) {
             System.out.println(id + "번 명언은 존재하지 않습니다.");
@@ -101,27 +101,57 @@ public class WiseSayingController {
     private void handleList(String[] cmds) {
         List<WiseSaying> list= service.getList();
 
+
         if(cmds.length <=1){
-            printList(list,1);
-        }else if(cmds.length<=3){
+            printList(list,0);
+        } else if (cmds.length <= 3) {
             int page = Integer.parseInt(cmds[3]);
-            printList(list,page);
+            printList(list, page-1);
+        } else {
+            printSelectList(list,cmds[2],cmds[4]);
+        }
+    }
+
+    private void printSelectList(List<WiseSaying> list,String type, String word) {
+        for(WiseSaying ws : list){
+            if(type.equals("content") && ws.getContent().contains(word)){
+                ws.getAll();
+            }else if(type.equals("author") && ws.getAuthor().contains(word)){
+                ws.getAll();
+            }
         }
     }
 
 
-   private void printList(List<WiseSaying> list, int page){
-        int startIndex = Math.max(0,list.size()-(5*page));
-        int endIndex = Math.max(0,startIndex-5);
+    private void printList(List<WiseSaying> list, int page){
+       list.sort(((o1, o2) -> Integer.compare(o2.getId(),o1.getId())));
 
-        System.out.println("번호 / 작가 / 명언");
-       System.out.println("----------------------");
+       int totalPage = list.size()/5+1;
 
-       for(int i=startIndex-1;i>=endIndex;i--){
-           WiseSaying ws = list.get(i);
-           System.out.printf("%d / %s / %s%n", ws.getId(), ws.getAuthor(), ws.getContent());
+       int startIndex = page*5;
+
+       int endIndex = startIndex+5;
+       if(endIndex>=list.size()){
+           endIndex = list.size();
        }
+
+       System.out.println("""
+               번호 / 작가 / 명언
+               ----------------------""");
+
+       for(int i=startIndex;i<endIndex;i++){
+           WiseSaying ws = list.get(i);
+           ws.getAll();
+       }
+       System.out.println(String.format("""
+               ----------------------
+               페이지 : [%d] / %d""",page+1,totalPage));
+
    }
+
+
+
+
 
     public void loadFile(){
         service.loadFile();
